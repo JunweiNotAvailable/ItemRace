@@ -1,0 +1,8 @@
+name: ItemRace
+version: '${project.version}'
+main: me.wertyc.itemrace.ItemRace
+api-version: 1.19
+commands:
+  itemrace:
+    usage: /<command>
+    description: Start a race and get anything you can get.
