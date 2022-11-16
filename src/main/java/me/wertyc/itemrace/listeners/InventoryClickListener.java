@@ -18,20 +18,23 @@ public class InventoryClickListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (!event.getView().getTitle().equals("Duration")) return;
-
         ItemStack clickedItem = event.getCurrentItem();
         if (clickedItem == null) return;
         String itemName = Objects.requireNonNull(clickedItem.getItemMeta()).getDisplayName();
         Player player = (Player) event.getWhoClicked();
         // duration
-        if (itemName.endsWith("minutes")) {
+        if (event.getView().getTitle().equals("Duration") && itemName.endsWith("minutes")) {
             // close inventory
             player.closeInventory();
             plugin.setDuration(Integer.parseInt(itemName.substring(0, itemName.length() - 8)) * 60);
             plugin.stop();
             plugin.start();
             event.setCancelled(true);
+            return;
+        }
+        // click items
+        if (plugin.isStarted()) {
+            plugin.pickedUpItem(player, clickedItem.getType());
         }
     }
 }
