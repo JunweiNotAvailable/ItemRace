@@ -210,4 +210,9 @@ public final class ItemRace extends JavaPlugin {
         }
         player.setScoreboard(scoreboard);
     }
+
+    public void removePlayer(Player player) {
+        players.remove(player);
+        playersItemList.remove(player);
+    }
 }
