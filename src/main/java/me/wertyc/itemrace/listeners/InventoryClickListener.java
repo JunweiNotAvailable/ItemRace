@@ -19,8 +19,8 @@ public class InventoryClickListener implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         ItemStack clickedItem = event.getCurrentItem();
-        if (clickedItem == null) return;
-        String itemName = Objects.requireNonNull(clickedItem.getItemMeta()).getDisplayName();
+        if (clickedItem == null || clickedItem.getItemMeta() == null) return;
+        String itemName = clickedItem.getItemMeta().getDisplayName();
         Player player = (Player) event.getWhoClicked();
         // duration
         if (event.getView().getTitle().equals("Duration") && itemName.endsWith("minutes")) {
