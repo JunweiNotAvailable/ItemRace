@@ -1,6 +1,8 @@
 package me.wertyc.itemrace.listeners;
 
 import me.wertyc.itemrace.ItemRace;
+import org.bukkit.Instrument;
+import org.bukkit.Note;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,6 +27,7 @@ public class InventoryClickListener implements Listener {
         // duration
         if (event.getView().getTitle().equals("Duration") && itemName.endsWith("minutes")) {
             // close inventory
+            player.playNote(player.getLocation(), Instrument.PLING, Note.flat(1, Note.Tone.A));
             player.closeInventory();
             plugin.setDuration(Integer.parseInt(itemName.substring(0, itemName.length() - 8)) * 60);
             plugin.stop();
@@ -34,7 +37,11 @@ public class InventoryClickListener implements Listener {
         }
         // click items
         if (plugin.isStarted()) {
-            plugin.pickedUpItem(player, clickedItem.getType());
+            int clickedSlot = event.getHotbarButton();
+            // if click using key and the slot is empty
+            if (clickedSlot == -1 || player.getInventory().getItem(clickedSlot) == null) {
+                plugin.pickedUpItem(player, clickedItem.getType());
+            }
         }
     }
 }
