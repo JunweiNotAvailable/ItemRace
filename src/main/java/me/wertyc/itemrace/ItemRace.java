@@ -5,9 +5,7 @@ import me.wertyc.itemrace.listeners.BucketFillListener;
 import me.wertyc.itemrace.listeners.InventoryClickListener;
 import me.wertyc.itemrace.listeners.PlayerQuitListener;
 import me.wertyc.itemrace.listeners.PlayerPickupItemListener;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -91,8 +89,16 @@ public final class ItemRace extends JavaPlugin {
                 started = false;
                 return;
             } else if (time == duration) {
-                players.forEach(p -> p.getInventory().clear());
-                players.forEach(this::createBoard);
+                players.forEach(player -> {
+                    player.getInventory().clear();
+                    player.playNote(player.getLocation(), Instrument.PLING, Note.flat(1, Note.Tone.A));
+                    createBoard(player);
+                });
+            } else if (time <= 5) {
+                players.forEach(player -> {
+                    player.sendMessage(ChatColor.GREEN + String.valueOf(time) + (time == 1 ? " second left" : " seconds left"));
+                    player.playNote(player.getLocation(), Instrument.PLING, Note.flat(1, Note.Tone.A));
+                });
             }
             time--;
             players.forEach(this::createBoard);
@@ -109,9 +115,7 @@ public final class ItemRace extends JavaPlugin {
         }
         for (Player player: players) {
             if (playersItemList.get(player).size() == max) {
-                players.forEach(p -> {
-                    p.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + player.getDisplayName() + " has won the game");
-                });
+                players.forEach(p -> p.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + player.getDisplayName() + " has won the game"));
             }
         }
     }
@@ -161,6 +165,8 @@ public final class ItemRace extends JavaPlugin {
         List<Material> itemList = playersItemList.get(player);
         if (itemList.contains(material)) return;
         itemList.add(material);
+        // play sound
+        player.playNote(player.getLocation(), Instrument.BELL, Note.flat(1, Note.Tone.G));
         players.forEach(this::createBoard);
     }
 
